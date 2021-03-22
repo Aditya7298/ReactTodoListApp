@@ -1,0 +1,26 @@
+.todo {
+  border: 0.5px solid black;
+  width: 200px;
+  height: 150px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.todo-title,
+.todo-date,
+.todo-buttons {
+  display: block;
+}
+
+.todo-title {
+  font-size: x-large;
+  margin-bottom: 10px;
+}
+
+.todo-date {
+  margin-bottom: 10px;
+}
+
+.todo-buttons {
+  float: bottom;
+}

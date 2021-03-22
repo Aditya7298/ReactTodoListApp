@@ -1,0 +1,16 @@
+.analytics {
+  flex-grow: 1;
+}
+
+.analytics-progress-ring {
+  height: 100%;
+  width: 100%;
+}
+
+.analytics-progress-ring__circle {
+  stroke-dasharray: 10 20;
+}
+
+.analytics-progress-ring__circle {
+  transition: stroke-dashoffset 0.35s;
+}
