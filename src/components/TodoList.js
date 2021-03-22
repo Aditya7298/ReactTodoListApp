@@ -19,6 +19,7 @@ const TodoList = () => {
     importance: "",
     date: "",
   });
+  const [selectedTodos, setSelectedTodos] = useState(new Set());
 
   useEffect(() => {
     setTodoList(model.readAllTodos());
@@ -29,6 +30,20 @@ const TodoList = () => {
       model.readFilteredTodos(filterInfo.importance, filterInfo.date)
     );
   }, [filterInfo, todoList]);
+
+  const handleSelect = (todoId) => {
+    setSelectedTodos((prevSelectedTodos) => {
+      const updatedSelectedTodos = new Set(prevSelectedTodos);
+
+      if (prevSelectedTodos.has(todoId)) {
+        updatedSelectedTodos.delete(todoId);
+      } else {
+        updatedSelectedTodos.add(todoId);
+      }
+
+      return updatedSelectedTodos;
+    });
+  };
 
   const handleAdd = (newTodoInfo) => {
     const { title, importance } = newTodoInfo;
@@ -81,9 +96,6 @@ const TodoList = () => {
     setFilterInfo({ importance: filteredImportance, date: filteredDate });
   };
 
-  /*Functions to handle the edit form. 
-  The edit form is bound to the todo on which edit button is clicked*/
-
   const showEditForm = (todoId) => {
     setEditFormInfo({ showEditForm: true, boundTodoId: todoId });
   };
@@ -105,6 +117,18 @@ const TodoList = () => {
     );
   };
 
+  const countCompletedTodos = () => {
+    let completedCount = 0;
+
+    filteredTodoList.forEach((todo) => {
+      if (todo.completed) {
+        completedCount += 1;
+      }
+    });
+
+    return completedCount;
+  };
+
   return (
     <div className="todolist">
       <div className="todolist-header">
@@ -114,16 +138,29 @@ const TodoList = () => {
         <div className="todolist-body-sidebar">
           <AddForm onAdd={handleAdd} />
           <FilterForm onFilter={handlefilter} />
-          <Analytics totalCount={3} completedCount={1} />
+          <Analytics
+            totalCount={filteredTodoList.length}
+            completedCount={countCompletedTodos()}
+          />
         </div>
         <div className="todolist-body-container">
           {filteredTodoList.map((todo) => (
             <Todo
               key={todo.id}
               todoInfo={todo}
-              onToggle={() => handleToggle(todo.id)}
-              onDelete={() => handleDelete(todo.id)}
-              onEdit={() => showEditForm(todo.id)}
+              isSelected={selectedTodos.has(todo.id)}
+              onToggle={() => {
+                handleToggle(todo.id);
+              }}
+              onDelete={() => {
+                handleDelete(todo.id);
+              }}
+              onEdit={() => {
+                showEditForm(todo.id);
+              }}
+              onSelect={() => {
+                handleSelect(todo.id);
+              }}
             />
           ))}
         </div>
