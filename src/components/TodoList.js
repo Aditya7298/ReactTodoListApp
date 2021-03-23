@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import model from "../model";
 import Todo from "./Todo";
 import EditForm from "./EditForm";
@@ -6,6 +6,8 @@ import Navbar from "./Navbar";
 import AddForm from "./AddForm";
 import FilterForm from "./FilterForm";
 import Analytics from "./Analytics";
+import BulkButtons from "./BulkButtons";
+import useHistory from "../hooks/useHistory";
 import "./TodoList.css";
 
 const TodoList = () => {
@@ -14,95 +16,192 @@ const TodoList = () => {
     showEditForm: false,
     boundTodoId: null,
   });
-  const [filteredTodoList, setfilteredTodoList] = useState([]);
   const [filterInfo, setFilterInfo] = useState({
     importance: "",
     date: "",
   });
-  const [selectedTodos, setSelectedTodos] = useState(new Set());
+  const [selectedTodoIds, setSelectedTodoIds] = useState(new Set());
+  const [
+    initHistory,
+    addNewEventToHistory,
+    fetchUndoHistory,
+    fetchRedoHistory,
+    removeFromUndoHistory,
+    removeFromRedoHistory,
+  ] = useHistory();
 
   useEffect(() => {
     setTodoList(model.readAllTodos());
-  }, []);
+    initHistory(model.readAllTodos());
+  }, [initHistory]);
 
   useEffect(() => {
-    setfilteredTodoList(
-      model.readFilteredTodos(filterInfo.importance, filterInfo.date)
-    );
-  }, [filterInfo, todoList]);
-
-  const handleSelect = (todoId) => {
-    setSelectedTodos((prevSelectedTodos) => {
-      const updatedSelectedTodos = new Set(prevSelectedTodos);
-
-      if (prevSelectedTodos.has(todoId)) {
-        updatedSelectedTodos.delete(todoId);
-      } else {
-        updatedSelectedTodos.add(todoId);
+    const handleUndoRedoKeyPress = (evt) => {
+      if (evt.metaKey && evt.key === "z") {
+        const prevTodoListState = fetchUndoHistory();
+        if (prevTodoListState) {
+          model
+            .changeTodoStoreState(prevTodoListState)
+            .then((modelResponse) => {
+              if (modelResponse) {
+                setTodoList(prevTodoListState);
+                removeFromUndoHistory();
+              } else {
+                //Handle Error
+              }
+            });
+        }
       }
 
-      return updatedSelectedTodos;
-    });
-  };
-
-  const handleAdd = (newTodoInfo) => {
-    const { title, importance } = newTodoInfo;
-    model.createTodo(title, importance).then((modelResponse) => {
-      if (modelResponse) {
-        setTodoList(model.readAllTodos());
-      } else {
-        //Handle Error
+      if (evt.metaKey && evt.key === "x") {
+        const prevTodoListState = fetchRedoHistory();
+        if (prevTodoListState) {
+          model
+            .changeTodoStoreState(prevTodoListState)
+            .then((modelResponse) => {
+              if (modelResponse) {
+                setTodoList(prevTodoListState);
+                removeFromRedoHistory();
+              } else {
+                //Handle Error
+              }
+            });
+        }
       }
-    });
-  };
-
-  const handleDelete = (todoId) => {
-    model.deleteTodo(todoId).then((modelResponse) => {
-      if (modelResponse) {
-        setTodoList(model.readAllTodos());
-      } else {
-        //Handle Error
-      }
-    });
-  };
-
-  const handleToggle = (todoId) => {
-    model.toggleTodo(todoId).then((modelResponse) => {
-      if (modelResponse) {
-        setTodoList(model.readAllTodos());
-      } else {
-        //Handle Error
-      }
-    });
-  };
-
-  const handleEdit = (todoId, updatedTitle, updatedImportance) => {
-    const prevTodo = model.readSingleTodo(todoId);
-    const updatedTodo = {
-      ...prevTodo,
-      title: updatedTitle,
-      importance: updatedImportance,
     };
-    model.editTodo(updatedTodo.id, updatedTodo).then((modelResponse) => {
+
+    window.addEventListener("keydown", handleUndoRedoKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleUndoRedoKeyPress);
+    };
+  }, [
+    fetchUndoHistory,
+    fetchRedoHistory,
+    removeFromUndoHistory,
+    removeFromRedoHistory,
+  ]);
+
+  const handleSelect = useCallback((todoId) => {
+    setSelectedTodoIds((prevSelectedTodoIds) => {
+      const updatedSelectedTodoIds = new Set(prevSelectedTodoIds);
+
+      if (prevSelectedTodoIds.has(todoId)) {
+        updatedSelectedTodoIds.delete(todoId);
+      } else {
+        updatedSelectedTodoIds.add(todoId);
+      }
+
+      return updatedSelectedTodoIds;
+    });
+  }, []);
+
+  const handleAdd = useCallback(
+    (newTodoInfo) => {
+      const { title, importance } = newTodoInfo;
+      model.createTodo(title, importance).then((modelResponse) => {
+        if (modelResponse) {
+          const currTodoList = model.readAllTodos();
+          setTodoList(currTodoList);
+          addNewEventToHistory(currTodoList);
+        } else {
+          //Handle Error
+        }
+      });
+    },
+    [addNewEventToHistory]
+  );
+
+  const handleDelete = useCallback(
+    (todoId) => {
+      model.deleteTodo(todoId).then((modelResponse) => {
+        if (modelResponse) {
+          const currTodoList = model.readAllTodos();
+          setTodoList(currTodoList);
+          addNewEventToHistory(currTodoList);
+        } else {
+          //Handle Error
+        }
+      });
+    },
+    [addNewEventToHistory]
+  );
+
+  const handleBulkDelete = useCallback(() => {
+    const todoIds = Array.from(selectedTodoIds);
+    model.deleteBulkTodos(todoIds).then((modelResponse) => {
       if (modelResponse) {
-        setTodoList(model.readAllTodos());
+        const currTodoList = model.readAllTodos();
+        addNewEventToHistory(currTodoList);
+        setTodoList(currTodoList);
+        setSelectedTodoIds(new Set());
       } else {
         //Handle Error
       }
     });
-  };
+  }, [selectedTodoIds, addNewEventToHistory]);
 
-  const handlefilter = (filteredImportance, filteredDate) => {
-    setFilterInfo({ importance: filteredImportance, date: filteredDate });
-  };
+  const handleToggle = useCallback(
+    (todoId) => {
+      model.toggleTodo(todoId).then((modelResponse) => {
+        if (modelResponse) {
+          const currTodoList = model.readAllTodos();
+          setTodoList(currTodoList);
+          addNewEventToHistory(currTodoList);
+        } else {
+          //Handle Error
+        }
+      });
+    },
+    [addNewEventToHistory]
+  );
 
-  const showEditForm = (todoId) => {
+  const handleBulkToggle = useCallback(() => {
+    const todoIds = Array.from(selectedTodoIds);
+    model.toggleBulkTodos(todoIds).then((modelResponse) => {
+      if (modelResponse) {
+        const currTodoList = model.readAllTodos();
+        setTodoList(currTodoList);
+        addNewEventToHistory(currTodoList);
+        setSelectedTodoIds(new Set());
+      } else {
+        //Handle Error
+      }
+    });
+  }, [selectedTodoIds, addNewEventToHistory]);
+
+  const showEditForm = useCallback((todoId) => {
     setEditFormInfo({ showEditForm: true, boundTodoId: todoId });
-  };
+  }, []);
 
-  const hideEditForm = () => {
+  const handleEdit = useCallback(
+    (todoId, updatedTitle, updatedImportance) => {
+      const prevTodo = model.readSingleTodo(todoId);
+      const updatedTodo = {
+        ...prevTodo,
+        title: updatedTitle,
+        importance: updatedImportance,
+      };
+      model.editTodo(updatedTodo.id, updatedTodo).then((modelResponse) => {
+        if (modelResponse) {
+          const currTodoList = model.readAllTodos();
+          setTodoList(currTodoList);
+          addNewEventToHistory(currTodoList);
+        } else {
+          //Handle Error
+        }
+      });
+    },
+    [addNewEventToHistory]
+  );
+
+  const handlefilter = useCallback((filteredImportance, filteredDate) => {
+    setFilterInfo({ importance: filteredImportance, date: filteredDate });
+  }, []);
+
+  const hideEditForm = useCallback(() => {
     setEditFormInfo({ showEditForm: false, boundTodoId: null });
-  };
+  }, []);
 
   const renderEditForm = () => {
     const boundTodo = model.readSingleTodo(editFormInfo.boundTodoId);
@@ -117,16 +216,26 @@ const TodoList = () => {
     );
   };
 
-  const countCompletedTodos = () => {
-    let completedCount = 0;
+  const getFilteredTodos = () => {
+    const filteredTodos = todoList.filter((todo) => {
+      const filteredDate =
+          filterInfo.date === ""
+            ? ""
+            : new Date(filterInfo.date).toDateString(),
+        filteredImportance = filterInfo.importance;
 
-    filteredTodoList.forEach((todo) => {
-      if (todo.completed) {
-        completedCount += 1;
+      if (filteredDate !== "" && todo.date !== filteredDate) {
+        return false;
       }
+
+      if (filteredImportance !== "" && todo.importance !== filteredImportance) {
+        return false;
+      }
+
+      return true;
     });
 
-    return completedCount;
+    return filteredTodos;
   };
 
   return (
@@ -138,31 +247,26 @@ const TodoList = () => {
         <div className="todolist-body-sidebar">
           <AddForm onAdd={handleAdd} />
           <FilterForm onFilter={handlefilter} />
-          <Analytics
-            totalCount={filteredTodoList.length}
-            completedCount={countCompletedTodos()}
-          />
+          <Analytics todoList={getFilteredTodos()} />
         </div>
         <div className="todolist-body-container">
-          {filteredTodoList.map((todo) => (
+          {getFilteredTodos().map((todo) => (
             <Todo
               key={todo.id}
               todoInfo={todo}
-              isSelected={selectedTodos.has(todo.id)}
-              onToggle={() => {
-                handleToggle(todo.id);
-              }}
-              onDelete={() => {
-                handleDelete(todo.id);
-              }}
-              onEdit={() => {
-                showEditForm(todo.id);
-              }}
-              onSelect={() => {
-                handleSelect(todo.id);
-              }}
+              isSelected={selectedTodoIds.has(todo.id)}
+              onToggle={handleToggle}
+              onDelete={handleDelete}
+              onEdit={showEditForm}
+              onSelect={handleSelect}
             />
           ))}
+        </div>
+        <div className="todolist-body-bulkbuttons">
+          <BulkButtons
+            onBulkDelete={handleBulkDelete}
+            onBulkToggle={handleBulkToggle}
+          />
         </div>
 
         {editFormInfo.showEditForm && renderEditForm()}

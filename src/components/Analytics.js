@@ -1,6 +1,15 @@
 import "./Analytics.css";
 
-const Analytics = ({ completedCount, totalCount }) => {
+const Analytics = ({ todoList }) => {
+  let completedCount = 0;
+  todoList.forEach((todo) => {
+    if (todo.completed) {
+      completedCount += 1;
+    }
+  });
+
+  const totalCount = todoList.length;
+
   const radius = 98;
   const circumference = radius * 2 * Math.PI;
   const percent =
@@ -19,7 +28,7 @@ const Analytics = ({ completedCount, totalCount }) => {
         <circle
           className="analytics-progress-ring__circle"
           strokeWidth="4"
-          fill="#00adb5"
+          fill="#769fcd"
           r="98"
           cx="50%"
           cy="25%"

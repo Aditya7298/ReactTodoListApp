@@ -16,7 +16,12 @@ const FilterForm = ({ onFilter }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     onFilter(formInput.importanceInput, formInput.dateInput);
+  };
+
+  const resetFilter = (event) => {
+    event.preventDefault();
     setFormInput({ importanceInput: "", dateInput: "" });
+    onFilter("", "");
   };
 
   return (
@@ -52,9 +57,7 @@ const FilterForm = ({ onFilter }) => {
         <button
           className="filterform-form-button"
           type="reset"
-          onClick={() => {
-            onFilter("", "");
-          }}
+          onClick={resetFilter}
         >
           Reset
         </button>
