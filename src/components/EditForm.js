@@ -38,9 +38,11 @@ const EditForm = ({
       <div className="modal">
         <h4>Edit Todo</h4>
         <form className="modal-editform" onSubmit={handleSubmit}>
+          <label htmlFor="editform-title">Edit Todo title</label>
           <input
             type="text"
             name="title"
+            id="editform-title"
             value={formInput.title}
             onChange={handleChange}
           ></input>
@@ -48,7 +50,7 @@ const EditForm = ({
             options={Object.values(importance)}
             value={formInput.importance}
             onChange={handleChange}
-            labelText="Select Todo importance"
+            labelText="Edit Todo importance"
             name="importance"
           />
           <Button onClick={handleSubmit}>Submit</Button>

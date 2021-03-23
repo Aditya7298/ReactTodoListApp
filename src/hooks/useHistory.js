@@ -26,8 +26,6 @@ const useHistory = () => {
   }, []);
 
   const removeFromUndoHistory = useCallback(() => {
-    // debugger;
-
     const prevTodoList = history.current.past[history.current.past.length - 1];
 
     history.current = {

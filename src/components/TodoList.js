@@ -13,18 +13,34 @@ import useModel from "../hooks/useModel";
 import "./TodoList.css";
 
 const TodoList = () => {
-  const model = useModel();
   const [todoList, setTodoList] = useState([]);
+
   const [editFormInfo, setEditFormInfo] = useState({
     showEditForm: false,
     boundTodoId: null,
   });
+
   const [filterInfo, setFilterInfo] = useState({
     importance: filtervalues.ALL,
     date: "",
   });
+
   const [selectedTodoIds, setSelectedTodoIds] = useState(new Set());
+
   const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const [
+    readAllTodos,
+    readSingleTodo,
+    changeTodoStoreState,
+    createTodo,
+    editTodo,
+    toggleTodo,
+    toggleBulkTodos,
+    deleteTodo,
+    deleteBulkTodos,
+  ] = useModel();
+
   const [
     initHistory,
     addNewEventToHistory,
@@ -35,41 +51,38 @@ const TodoList = () => {
   ] = useHistory();
 
   useEffect(() => {
-    setTodoList(model.readAllTodos());
-    initHistory(model.readAllTodos());
-  }, [initHistory, model]);
+    const currTodoList = readAllTodos();
+    setTodoList(currTodoList);
+    initHistory(currTodoList);
+  }, [initHistory, readAllTodos]);
 
   useEffect(() => {
     const handleUndoRedoKeyPress = (evt) => {
       if (evt.metaKey && evt.key === "z") {
         const prevTodoListState = fetchUndoHistory();
         if (prevTodoListState) {
-          model
-            .changeTodoStoreState(prevTodoListState)
-            .then((modelResponse) => {
-              if (modelResponse) {
-                setTodoList(prevTodoListState);
-                removeFromUndoHistory();
-              } else {
-                handleSnackbar();
-              }
-            });
+          changeTodoStoreState(prevTodoListState).then((modelResponse) => {
+            if (modelResponse) {
+              setTodoList(prevTodoListState);
+              removeFromUndoHistory();
+            } else {
+              handleSnackbar();
+            }
+          });
         }
       }
 
       if (evt.metaKey && evt.key === "x") {
         const prevTodoListState = fetchRedoHistory();
         if (prevTodoListState) {
-          model
-            .changeTodoStoreState(prevTodoListState)
-            .then((modelResponse) => {
-              if (modelResponse) {
-                setTodoList(prevTodoListState);
-                removeFromRedoHistory();
-              } else {
-                handleSnackbar();
-              }
-            });
+          changeTodoStoreState(prevTodoListState).then((modelResponse) => {
+            if (modelResponse) {
+              setTodoList(prevTodoListState);
+              removeFromRedoHistory();
+            } else {
+              handleSnackbar();
+            }
+          });
         }
       }
     };
@@ -84,7 +97,7 @@ const TodoList = () => {
     fetchRedoHistory,
     removeFromUndoHistory,
     removeFromRedoHistory,
-    model,
+    changeTodoStoreState,
   ]);
 
   const handleSnackbar = () => {
@@ -111,9 +124,9 @@ const TodoList = () => {
   const handleAdd = useCallback(
     (newTodoInfo) => {
       const { title, importance } = newTodoInfo;
-      model.createTodo(title, importance).then((modelResponse) => {
+      createTodo(title, importance).then((modelResponse) => {
         if (modelResponse) {
-          const currTodoList = model.readAllTodos();
+          const currTodoList = readAllTodos();
           setTodoList(currTodoList);
           addNewEventToHistory(currTodoList);
         } else {
@@ -121,29 +134,29 @@ const TodoList = () => {
         }
       });
     },
-    [addNewEventToHistory, model]
+    [addNewEventToHistory, readAllTodos, createTodo]
   );
 
   const handleDelete = useCallback(
     (todoId) => {
-      model.deleteTodo(todoId).then((modelResponse) => {
+      deleteTodo(todoId).then((modelResponse) => {
         if (modelResponse) {
-          const currTodoList = model.readAllTodos();
+          const currTodoList = readAllTodos();
           setTodoList(currTodoList);
-          addNewEventToHistory(currTodoList);
+          addNewEventToHistory(readAllTodos());
         } else {
           handleSnackbar();
         }
       });
     },
-    [addNewEventToHistory, model]
+    [addNewEventToHistory, readAllTodos, deleteTodo]
   );
 
   const handleBulkDelete = useCallback(() => {
     const todoIds = Array.from(selectedTodoIds);
-    model.deleteBulkTodos(todoIds).then((modelResponse) => {
+    deleteBulkTodos(todoIds).then((modelResponse) => {
       if (modelResponse) {
-        const currTodoList = model.readAllTodos();
+        const currTodoList = readAllTodos();
         addNewEventToHistory(currTodoList);
         setTodoList(currTodoList);
         setSelectedTodoIds(new Set());
@@ -151,13 +164,13 @@ const TodoList = () => {
         handleSnackbar();
       }
     });
-  }, [selectedTodoIds, addNewEventToHistory, model]);
+  }, [selectedTodoIds, addNewEventToHistory, readAllTodos, deleteBulkTodos]);
 
   const handleToggle = useCallback(
     (todoId) => {
-      model.toggleTodo(todoId).then((modelResponse) => {
+      toggleTodo(todoId).then((modelResponse) => {
         if (modelResponse) {
-          const currTodoList = model.readAllTodos();
+          const currTodoList = readAllTodos();
           setTodoList(currTodoList);
           addNewEventToHistory(currTodoList);
         } else {
@@ -165,14 +178,14 @@ const TodoList = () => {
         }
       });
     },
-    [addNewEventToHistory, model]
+    [addNewEventToHistory, readAllTodos, toggleTodo]
   );
 
   const handleBulkToggle = useCallback(() => {
     const todoIds = Array.from(selectedTodoIds);
-    model.toggleBulkTodos(todoIds).then((modelResponse) => {
+    toggleBulkTodos(todoIds).then((modelResponse) => {
       if (modelResponse) {
-        const currTodoList = model.readAllTodos();
+        const currTodoList = readAllTodos();
         setTodoList(currTodoList);
         addNewEventToHistory(currTodoList);
         setSelectedTodoIds(new Set());
@@ -180,7 +193,7 @@ const TodoList = () => {
         handleSnackbar();
       }
     });
-  }, [selectedTodoIds, addNewEventToHistory, model]);
+  }, [selectedTodoIds, addNewEventToHistory, toggleBulkTodos, readAllTodos]);
 
   const showEditForm = useCallback((todoId) => {
     setEditFormInfo({ showEditForm: true, boundTodoId: todoId });
@@ -188,15 +201,13 @@ const TodoList = () => {
 
   const handleEdit = useCallback(
     (todoId, updatedTitle, updatedImportance) => {
-      const prevTodo = model.readSingleTodo(todoId);
       const updatedTodo = {
-        ...prevTodo,
         title: updatedTitle,
         importance: updatedImportance,
       };
-      model.editTodo(updatedTodo.id, updatedTodo).then((modelResponse) => {
+      editTodo(todoId, updatedTodo).then((modelResponse) => {
         if (modelResponse) {
-          const currTodoList = model.readAllTodos();
+          const currTodoList = readAllTodos();
           setTodoList(currTodoList);
           addNewEventToHistory(currTodoList);
         } else {
@@ -204,7 +215,7 @@ const TodoList = () => {
         }
       });
     },
-    [addNewEventToHistory, model]
+    [addNewEventToHistory, editTodo, readAllTodos]
   );
 
   const handlefilter = useCallback((filteredImportance, filteredDate) => {
@@ -216,7 +227,7 @@ const TodoList = () => {
   }, []);
 
   const renderEditForm = () => {
-    const boundTodo = model.readSingleTodo(editFormInfo.boundTodoId);
+    const boundTodo = readSingleTodo(editFormInfo.boundTodoId);
     return (
       <EditForm
         todoId={boundTodo.id}

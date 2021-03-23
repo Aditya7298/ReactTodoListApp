@@ -34,25 +34,6 @@ const useModel = () => {
     []
   );
 
-  const readFilteredTodos = useCallback((filteredImportance, filteredDate) => {
-    const filteredTodos = TodoStore.current.filter((todo) => {
-      filteredDate =
-        filteredDate === "" ? "" : new Date(filteredDate).toDateString();
-
-      if (filteredDate !== "" && todo.date !== filteredDate) {
-        return false;
-      }
-
-      if (filteredImportance !== "" && todo.importance !== filteredImportance) {
-        return false;
-      }
-
-      return true;
-    });
-
-    return filteredTodos;
-  }, []);
-
   const changeTodoStoreState = useCallback(async (prevTodoStore) => {
     try {
       await resolveDatabaseCall();
@@ -85,7 +66,13 @@ const useModel = () => {
     try {
       await resolveDatabaseCall();
       TodoStore.current = TodoStore.current.map((todo) =>
-        todo.id === todoId ? { ...todo, ...updatedTodo } : todo
+        todo.id === todoId
+          ? {
+              ...todo,
+              title: updatedTodo.title,
+              importance: updatedTodo.importance,
+            }
+          : todo
       );
       return true;
     } catch (err) {
@@ -143,10 +130,9 @@ const useModel = () => {
     }
   }, []);
 
-  return {
+  return [
     readAllTodos,
     readSingleTodo,
-    readFilteredTodos,
     changeTodoStoreState,
     createTodo,
     editTodo,
@@ -154,7 +140,7 @@ const useModel = () => {
     toggleBulkTodos,
     deleteTodo,
     deleteBulkTodos,
-  };
+  ];
 };
 
 export default useModel;
