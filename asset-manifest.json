@@ -1,24 +1,24 @@
 {
   "files": {
-    "main.css": "/ReactTodoListApp/static/css/main.d8911636.chunk.css",
-    "main.js": "/ReactTodoListApp/static/js/main.e87df1e3.chunk.js",
-    "main.js.map": "/ReactTodoListApp/static/js/main.e87df1e3.chunk.js.map",
-    "runtime-main.js": "/ReactTodoListApp/static/js/runtime-main.b08412ba.js",
-    "runtime-main.js.map": "/ReactTodoListApp/static/js/runtime-main.b08412ba.js.map",
-    "static/js/2.9e685fd4.chunk.js": "/ReactTodoListApp/static/js/2.9e685fd4.chunk.js",
-    "static/js/2.9e685fd4.chunk.js.map": "/ReactTodoListApp/static/js/2.9e685fd4.chunk.js.map",
-    "static/js/3.b560055f.chunk.js": "/ReactTodoListApp/static/js/3.b560055f.chunk.js",
-    "static/js/3.b560055f.chunk.js.map": "/ReactTodoListApp/static/js/3.b560055f.chunk.js.map",
+    "main.css": "/ReactTodoListApp/static/css/main.f3424e14.chunk.css",
+    "main.js": "/ReactTodoListApp/static/js/main.9d40a382.chunk.js",
+    "main.js.map": "/ReactTodoListApp/static/js/main.9d40a382.chunk.js.map",
+    "runtime-main.js": "/ReactTodoListApp/static/js/runtime-main.67524ca3.js",
+    "runtime-main.js.map": "/ReactTodoListApp/static/js/runtime-main.67524ca3.js.map",
+    "static/js/2.9a3c814a.chunk.js": "/ReactTodoListApp/static/js/2.9a3c814a.chunk.js",
+    "static/js/2.9a3c814a.chunk.js.map": "/ReactTodoListApp/static/js/2.9a3c814a.chunk.js.map",
+    "static/js/3.de7bd8df.chunk.js": "/ReactTodoListApp/static/js/3.de7bd8df.chunk.js",
+    "static/js/3.de7bd8df.chunk.js.map": "/ReactTodoListApp/static/js/3.de7bd8df.chunk.js.map",
     "index.html": "/ReactTodoListApp/index.html",
-    "static/css/main.d8911636.chunk.css.map": "/ReactTodoListApp/static/css/main.d8911636.chunk.css.map",
-    "static/js/2.9e685fd4.chunk.js.LICENSE.txt": "/ReactTodoListApp/static/js/2.9e685fd4.chunk.js.LICENSE.txt",
+    "static/css/main.f3424e14.chunk.css.map": "/ReactTodoListApp/static/css/main.f3424e14.chunk.css.map",
+    "static/js/2.9a3c814a.chunk.js.LICENSE.txt": "/ReactTodoListApp/static/js/2.9a3c814a.chunk.js.LICENSE.txt",
     "static/media/delete.4cf85250.png": "/ReactTodoListApp/static/media/delete.4cf85250.png",
     "static/media/toggle.e819d821.png": "/ReactTodoListApp/static/media/toggle.e819d821.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.b08412ba.js",
-    "static/js/2.9e685fd4.chunk.js",
-    "static/css/main.d8911636.chunk.css",
-    "static/js/main.e87df1e3.chunk.js"
+    "static/js/runtime-main.67524ca3.js",
+    "static/js/2.9a3c814a.chunk.js",
+    "static/css/main.f3424e14.chunk.css",
+    "static/js/main.9d40a382.chunk.js"
   ]
 }
