@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import model from "../model";
+import { filtervalues } from "../constants";
 import Todo from "./Todo";
 import EditForm from "./EditForm";
 import Navbar from "./Navbar";
@@ -8,16 +8,18 @@ import FilterForm from "./FilterForm";
 import Analytics from "./Analytics";
 import BulkButtons from "./BulkButtons";
 import useHistory from "../hooks/useHistory";
+import useModel from "../hooks/useModel";
 import "./TodoList.css";
 
 const TodoList = () => {
+  const model = useModel();
   const [todoList, setTodoList] = useState([]);
   const [editFormInfo, setEditFormInfo] = useState({
     showEditForm: false,
     boundTodoId: null,
   });
   const [filterInfo, setFilterInfo] = useState({
-    importance: "",
+    importance: filtervalues.ALL,
     date: "",
   });
   const [selectedTodoIds, setSelectedTodoIds] = useState(new Set());
@@ -33,7 +35,7 @@ const TodoList = () => {
   useEffect(() => {
     setTodoList(model.readAllTodos());
     initHistory(model.readAllTodos());
-  }, [initHistory]);
+  }, [initHistory, model]);
 
   useEffect(() => {
     const handleUndoRedoKeyPress = (evt) => {
@@ -80,6 +82,7 @@ const TodoList = () => {
     fetchRedoHistory,
     removeFromUndoHistory,
     removeFromRedoHistory,
+    model,
   ]);
 
   const handleSelect = useCallback((todoId) => {
@@ -109,7 +112,7 @@ const TodoList = () => {
         }
       });
     },
-    [addNewEventToHistory]
+    [addNewEventToHistory, model]
   );
 
   const handleDelete = useCallback(
@@ -124,7 +127,7 @@ const TodoList = () => {
         }
       });
     },
-    [addNewEventToHistory]
+    [addNewEventToHistory, model]
   );
 
   const handleBulkDelete = useCallback(() => {
@@ -139,7 +142,7 @@ const TodoList = () => {
         //Handle Error
       }
     });
-  }, [selectedTodoIds, addNewEventToHistory]);
+  }, [selectedTodoIds, addNewEventToHistory, model]);
 
   const handleToggle = useCallback(
     (todoId) => {
@@ -153,7 +156,7 @@ const TodoList = () => {
         }
       });
     },
-    [addNewEventToHistory]
+    [addNewEventToHistory, model]
   );
 
   const handleBulkToggle = useCallback(() => {
@@ -168,7 +171,7 @@ const TodoList = () => {
         //Handle Error
       }
     });
-  }, [selectedTodoIds, addNewEventToHistory]);
+  }, [selectedTodoIds, addNewEventToHistory, model]);
 
   const showEditForm = useCallback((todoId) => {
     setEditFormInfo({ showEditForm: true, boundTodoId: todoId });
@@ -192,7 +195,7 @@ const TodoList = () => {
         }
       });
     },
-    [addNewEventToHistory]
+    [addNewEventToHistory, model]
   );
 
   const handlefilter = useCallback((filteredImportance, filteredDate) => {
@@ -228,7 +231,10 @@ const TodoList = () => {
         return false;
       }
 
-      if (filteredImportance !== "" && todo.importance !== filteredImportance) {
+      if (
+        filteredImportance !== filtervalues.ALL &&
+        todo.importance !== filteredImportance
+      ) {
         return false;
       }
 

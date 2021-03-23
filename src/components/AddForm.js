@@ -1,29 +1,34 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { importance } from "../constants";
+import Button from "./Button";
+import OptionsList from "./OptionsList";
 import "./AddForm.css";
 
 const AddForm = ({ onAdd }) => {
   const [newTodoInfo, setNewTodoInfo] = useState({
     titleInput: "",
-    importanceInput: "",
+    importanceInput: importance.HIGH,
   });
 
-  const handleChange = (event) => {
+  const handleChange = useCallback((event) => {
     const { name, value } = event.target;
     setNewTodoInfo((prevNewTodoInfo) => ({
       ...prevNewTodoInfo,
       [name]: value,
     }));
-  };
+  }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onAdd({
-      title: newTodoInfo.titleInput,
-      importance: newTodoInfo.importanceInput,
-    });
-    setNewTodoInfo({ titleInput: "", importanceInput: "" });
-  };
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      onAdd({
+        title: newTodoInfo.titleInput,
+        importance: newTodoInfo.importanceInput,
+      });
+      setNewTodoInfo({ titleInput: "", importanceInput: importance.HIGH });
+    },
+    [onAdd, newTodoInfo]
+  );
 
   return (
     <div className="addform">
@@ -37,22 +42,14 @@ const AddForm = ({ onAdd }) => {
           onChange={handleChange}
           placeholder="Add new todo title"
         ></input>
-        <label htmlFor="addform-form-importance">Select Todo importance</label>
-        <select
-          id="addform-form-importance"
-          className="addform-form-importance"
-          name="importanceInput"
+        <OptionsList
+          options={Object.values(importance)}
+          value={newTodoInfo.importanceInput}
           onChange={handleChange}
-          value={newTodoInfo.importance}
-        >
-          <option value={importance.HIGH}>{importance.HIGH}</option>
-          <option value={importance.MEDIUM}>{importance.MEDIUM}</option>
-          <option value={importance.LOW}>{importance.LOW}</option>
-          <option value={importance.NONE}>{importance.NONE}</option>
-        </select>
-        <button className="addform-form-button" type="submit">
-          Add
-        </button>
+          labelText="Select Todo importance"
+          name="importanceInput"
+        />
+        <Button onClick={handleSubmit}>Add todo</Button>
       </form>
     </div>
   );

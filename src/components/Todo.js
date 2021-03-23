@@ -8,7 +8,7 @@ const Todo = ({
   onEdit,
   onSelect,
 }) => {
-  const { id, title, importance, date } = todoInfo;
+  const { id, title, importance, date, completed } = todoInfo;
 
   return (
     <div className="todo">
@@ -16,13 +16,13 @@ const Todo = ({
         onClick={() => {
           onSelect(id);
         }}
-        className={
-          isSelected
-            ? "todo-selectbutton todo-selectbutton-selected"
-            : "todo-selectbutton"
-        }
+        className={`todo-selectbutton ${
+          isSelected ? "todo-selectbutton-selected" : ""
+        }`}
       ></span>
-      <span className="todo-title">{title}</span>
+      <span className={`todo-title ${completed ? "todo-completed" : ""}`}>
+        {title}
+      </span>
       <span className="todo-date">{date}</span>
       <div className="todo-buttons">
         <button

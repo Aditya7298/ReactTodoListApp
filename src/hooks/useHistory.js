@@ -52,9 +52,14 @@ const useHistory = () => {
     const prevTodoList =
       history.current.future[history.current.future.length - 1];
 
-    history.current.past = [...history.current.past, history.current.present];
-    history.current.present = prevTodoList;
-    history.current.future.splice(history.current.future.length - 1, 1);
+    history.current = {
+      past: [...history.current.past, history.current.present],
+      present: prevTodoList,
+      future: history.current.future.slice(
+        0,
+        history.current.future.length - 1
+      ),
+    };
   }, []);
 
   return [

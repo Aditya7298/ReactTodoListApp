@@ -6,12 +6,12 @@
 }
 
 .todolist-header {
-  flex-grow: 1;
+  height: 8%;
 }
 
 .todolist-body {
   background-color: #d6e6f2;
-  flex-grow: 12;
+  height: 92%;
   display: flex;
   flex-direction: row;
 }
@@ -26,6 +26,8 @@
 }
 
 .todolist-body-container {
+  max-height: 100%;
+  overflow-x: auto;
   box-sizing: border-box;
   padding-left: 10px;
   padding-top: 10px;

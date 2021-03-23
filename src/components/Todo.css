@@ -5,7 +5,12 @@
   height: 150px;
   text-align: center;
   margin-bottom: 10px;
+  margin-right: 10px;
   position: relative;
+}
+
+.todo-completed {
+  text-decoration: line-through;
 }
 
 .todo-selectbutton {

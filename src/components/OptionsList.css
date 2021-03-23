@@ -1,8 +1,8 @@
-.addform {
-  border-bottom: 0.5px solid black;
+.optionslist-label {
+  text-align: center;
 }
 
-.addform-form-title {
+.optionslist-select {
   font-family: "Overpass", sans-serif;
   margin: auto;
   margin-bottom: 10px;
@@ -14,8 +14,4 @@
   font-size: large;
   padding-left: 10px;
   outline: none;
-}
-
-.addform-form {
-  text-align: center;
 }

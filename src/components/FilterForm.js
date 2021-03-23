@@ -1,28 +1,36 @@
-import { useState } from "react";
-import { importance } from "../constants";
+import { useState, useCallback } from "react";
+import { filtervalues } from "../constants";
+import Button from "./Button";
+import OptionsList from "./OptionsList";
 import "./FilterForm.css";
 
 const FilterForm = ({ onFilter }) => {
   const [formInput, setFormInput] = useState({
-    importanceInput: "",
+    importanceInput: filtervalues.ALL,
     dateInput: "",
   });
 
-  const handleChange = (event) => {
+  const handleChange = useCallback((event) => {
     const { name, value } = event.target;
     setFormInput((prevFormInput) => ({ ...prevFormInput, [name]: value }));
-  };
+  }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onFilter(formInput.importanceInput, formInput.dateInput);
-  };
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      onFilter(formInput.importanceInput, formInput.dateInput);
+    },
+    [onFilter, formInput]
+  );
 
-  const resetFilter = (event) => {
-    event.preventDefault();
-    setFormInput({ importanceInput: "", dateInput: "" });
-    onFilter("", "");
-  };
+  const resetFilter = useCallback(
+    (event) => {
+      event.preventDefault();
+      setFormInput({ importanceInput: filtervalues.ALL, dateInput: "" });
+      onFilter(filtervalues.ALL, "");
+    },
+    [onFilter]
+  );
 
   return (
     <div className="filterform">
@@ -37,30 +45,15 @@ const FilterForm = ({ onFilter }) => {
           value={formInput.dateInput}
           onChange={handleChange}
         />
-        <label htmlFor="filterform-form-importance">Filter by importance</label>
-        <select
-          id="filterform-form-importance"
-          className="filterform-form-importance"
-          name="importanceInput"
+        <OptionsList
+          options={Object.values(filtervalues)}
           value={formInput.importanceInput}
           onChange={handleChange}
-        >
-          <option value="">All</option>
-          <option value={importance.HIGH}>{importance.HIGH}</option>
-          <option value={importance.MEDIUM}>{importance.MEDIUM}</option>
-          <option value={importance.LOW}>{importance.LOW}</option>
-          <option value={importance.NONE}>{importance.NONE}</option>
-        </select>
-        <button className="filterform-form-button" type="submit">
-          Filter Todos
-        </button>
-        <button
-          className="filterform-form-button"
-          type="reset"
-          onClick={resetFilter}
-        >
-          Reset
-        </button>
+          labelText="Select Todo importance"
+          name="importanceInput"
+        />
+        <Button onClick={handleSubmit}>Filter Todos</Button>
+        <Button onClick={resetFilter}>Reset</Button>
       </form>
     </div>
   );
