@@ -2,7 +2,7 @@ import { useRef, useCallback } from "react";
 import { resolveDatabaseCall } from "../database.js";
 import { v4 as uuid } from "uuid";
 
-const useDatabase = () => {
+const useModel = () => {
   const TodoStore = useRef([
     {
       id: "1",
@@ -157,4 +157,4 @@ const useDatabase = () => {
   };
 };
 
-export default useDatabase;
+export default useModel;
