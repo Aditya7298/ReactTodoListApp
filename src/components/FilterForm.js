@@ -49,7 +49,7 @@ const FilterForm = ({ onFilter }) => {
           options={Object.values(filtervalues)}
           value={formInput.importanceInput}
           onChange={handleChange}
-          labelText="Select Todo importance"
+          labelText="Filter by Importance"
           name="importanceInput"
         />
         <Button onClick={handleSubmit}>Filter Todos</Button>

@@ -7,6 +7,7 @@ import AddForm from "./AddForm";
 import FilterForm from "./FilterForm";
 import Analytics from "./Analytics";
 import BulkButtons from "./BulkButtons";
+import Snackbar from "./Snackbar";
 import useHistory from "../hooks/useHistory";
 import useModel from "../hooks/useModel";
 import "./TodoList.css";
@@ -23,6 +24,7 @@ const TodoList = () => {
     date: "",
   });
   const [selectedTodoIds, setSelectedTodoIds] = useState(new Set());
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [
     initHistory,
     addNewEventToHistory,
@@ -49,7 +51,7 @@ const TodoList = () => {
                 setTodoList(prevTodoListState);
                 removeFromUndoHistory();
               } else {
-                //Handle Error
+                handleSnackbar();
               }
             });
         }
@@ -65,7 +67,7 @@ const TodoList = () => {
                 setTodoList(prevTodoListState);
                 removeFromRedoHistory();
               } else {
-                //Handle Error
+                handleSnackbar();
               }
             });
         }
@@ -84,6 +86,13 @@ const TodoList = () => {
     removeFromRedoHistory,
     model,
   ]);
+
+  const handleSnackbar = () => {
+    setShowSnackbar(true);
+    setTimeout(() => {
+      setShowSnackbar(false);
+    }, 2000);
+  };
 
   const handleSelect = useCallback((todoId) => {
     setSelectedTodoIds((prevSelectedTodoIds) => {
@@ -108,7 +117,7 @@ const TodoList = () => {
           setTodoList(currTodoList);
           addNewEventToHistory(currTodoList);
         } else {
-          //Handle Error
+          handleSnackbar();
         }
       });
     },
@@ -123,7 +132,7 @@ const TodoList = () => {
           setTodoList(currTodoList);
           addNewEventToHistory(currTodoList);
         } else {
-          //Handle Error
+          handleSnackbar();
         }
       });
     },
@@ -139,7 +148,7 @@ const TodoList = () => {
         setTodoList(currTodoList);
         setSelectedTodoIds(new Set());
       } else {
-        //Handle Error
+        handleSnackbar();
       }
     });
   }, [selectedTodoIds, addNewEventToHistory, model]);
@@ -152,7 +161,7 @@ const TodoList = () => {
           setTodoList(currTodoList);
           addNewEventToHistory(currTodoList);
         } else {
-          //Handle Error
+          handleSnackbar();
         }
       });
     },
@@ -168,7 +177,7 @@ const TodoList = () => {
         addNewEventToHistory(currTodoList);
         setSelectedTodoIds(new Set());
       } else {
-        //Handle Error
+        handleSnackbar();
       }
     });
   }, [selectedTodoIds, addNewEventToHistory, model]);
@@ -191,7 +200,7 @@ const TodoList = () => {
           setTodoList(currTodoList);
           addNewEventToHistory(currTodoList);
         } else {
-          //Handle Error
+          handleSnackbar();
         }
       });
     },
@@ -276,6 +285,7 @@ const TodoList = () => {
         </div>
 
         {editFormInfo.showEditForm && renderEditForm()}
+        {showSnackbar && <Snackbar />}
       </div>
     </div>
   );

@@ -1,4 +1,7 @@
 import "./Todo.css";
+import todoToggle from "./Icons/task-complete.png";
+import todoDelete from "./Icons/single-delete.png";
+import todoEdit from "./Icons/edit.png";
 
 const Todo = ({
   todoInfo,
@@ -24,28 +27,41 @@ const Todo = ({
         {title}
       </span>
       <span className="todo-date">{date}</span>
+      <span className="todo-importance">{importance}</span>
       <div className="todo-buttons">
-        <button
+        <span
           onClick={() => {
             onToggle(id);
           }}
         >
-          Toggle
-        </button>
-        <button
+          <img
+            alt="Toggle Todo Complete"
+            className="todo-buttons-toggle"
+            src={todoToggle}
+          ></img>
+        </span>
+        <span
           onClick={() => {
             onDelete(id);
           }}
         >
-          Delete
-        </button>
-        <button
+          <img
+            alt="Toggle Todo Complete"
+            className="todo-buttons-delete"
+            src={todoDelete}
+          ></img>
+        </span>
+        <span
           onClick={() => {
             onEdit(id);
           }}
         >
-          Edit
-        </button>
+          <img
+            alt="Toggle Todo Complete"
+            className="todo-buttons-edit"
+            src={todoEdit}
+          ></img>
+        </span>
       </div>
     </div>
   );

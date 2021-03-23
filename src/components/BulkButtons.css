@@ -14,11 +14,12 @@
   border: 1px solid black;
   border-radius: 50%;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 
 .bulkbuttons-delete:hover,
 .bulkbuttons-toggle:hover {
-  background-color: khaki;
+  background-color: #769fcd;
 }
 
 .bulkbuttons-delete-icon,
