@@ -36,7 +36,7 @@ const EditForm = ({
   return (
     <div className="modal-bg">
       <div className="modal">
-        <h4>Edit Todo</h4>
+        <h3>Edit Todo</h3>
         <form className="modal-editform" onSubmit={handleSubmit}>
           <label htmlFor="editform-title">Edit Todo title</label>
           <input

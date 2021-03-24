@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { filtervalues } from "../constants";
+import { importanceFilter, completionFilter } from "../constants";
 import Todo from "./Todo";
 import EditForm from "./EditForm";
 import Navbar from "./Navbar";
@@ -21,8 +21,9 @@ const TodoList = () => {
   });
 
   const [filterInfo, setFilterInfo] = useState({
-    importance: filtervalues.ALL,
+    importance: importanceFilter.ALL,
     date: "",
+    completion: completionFilter.ALL,
   });
 
   const [selectedTodoIds, setSelectedTodoIds] = useState(new Set());
@@ -218,9 +219,16 @@ const TodoList = () => {
     [addNewEventToHistory, editTodo, readAllTodos]
   );
 
-  const handlefilter = useCallback((filteredImportance, filteredDate) => {
-    setFilterInfo({ importance: filteredImportance, date: filteredDate });
-  }, []);
+  const handlefilter = useCallback(
+    (filteredImportance, filteredDate, filterCompletion) => {
+      setFilterInfo({
+        importance: filteredImportance,
+        date: filteredDate,
+        completion: filterCompletion,
+      });
+    },
+    []
+  );
 
   const hideEditForm = useCallback(() => {
     setEditFormInfo({ showEditForm: false, boundTodoId: null });
@@ -247,13 +255,27 @@ const TodoList = () => {
             : new Date(filterInfo.date).toDateString(),
         filteredImportance = filterInfo.importance;
 
+      const filteredCompletion =
+        filterInfo.completion === completionFilter.ALL
+          ? completionFilter.ALL
+          : filterInfo.completion === completionFilter.COMPLETED
+          ? true
+          : false;
+
       if (filteredDate !== "" && todo.date !== filteredDate) {
         return false;
       }
 
       if (
-        filteredImportance !== filtervalues.ALL &&
+        filteredImportance !== importanceFilter.ALL &&
         todo.importance !== filteredImportance
+      ) {
+        return false;
+      }
+
+      if (
+        filteredCompletion !== completionFilter.ALL &&
+        todo.completed !== filteredCompletion
       ) {
         return false;
       }

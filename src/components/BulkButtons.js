@@ -17,6 +17,13 @@ const BulkButtons = ({ onBulkDelete, onBulkToggle }) => {
           src={BulkDeleteIcon}
         ></img>
       </span>
+      <span className="bulkbuttons-delete-text">
+        Delete
+        <br />
+        selected
+        <br />
+        todos
+      </span>
       <span
         onClick={() => {
           onBulkToggle();
@@ -28,6 +35,13 @@ const BulkButtons = ({ onBulkDelete, onBulkToggle }) => {
           className="bulkbuttons-toggle-icon"
           src={BulkToggleIcon}
         ></img>
+      </span>
+      <span className="bulkbuttons-toggle-text">
+        Toggle
+        <br />
+        selected
+        <br />
+        todos
       </span>
     </div>
   );

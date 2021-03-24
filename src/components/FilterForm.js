@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from "react";
-import { filtervalues } from "../constants";
+import { importanceFilter, completionFilter } from "../constants";
 import Button from "./Button";
 import OptionsList from "./OptionsList";
 import "./FilterForm.css";
 
 const FilterForm = ({ onFilter }) => {
   const [formInput, setFormInput] = useState({
-    importanceInput: filtervalues.ALL,
+    importanceInput: importanceFilter.ALL,
     dateInput: "",
+    completionInput: completionFilter.ALL,
   });
 
   const handleChange = useCallback((event) => {
@@ -18,7 +19,11 @@ const FilterForm = ({ onFilter }) => {
   const handleSubmit = useCallback(
     (event) => {
       event.preventDefault();
-      onFilter(formInput.importanceInput, formInput.dateInput);
+      onFilter(
+        formInput.importanceInput,
+        formInput.dateInput,
+        formInput.completionInput
+      );
     },
     [onFilter, formInput]
   );
@@ -26,8 +31,12 @@ const FilterForm = ({ onFilter }) => {
   const resetFilter = useCallback(
     (event) => {
       event.preventDefault();
-      setFormInput({ importanceInput: filtervalues.ALL, dateInput: "" });
-      onFilter(filtervalues.ALL, "");
+      setFormInput({
+        importanceInput: importanceFilter.ALL,
+        dateInput: "",
+        completionInput: completionFilter.ALL,
+      });
+      onFilter(importanceFilter.ALL, "", completionFilter.ALL);
     },
     [onFilter]
   );
@@ -36,7 +45,7 @@ const FilterForm = ({ onFilter }) => {
     <div className="filterform">
       <h3>Filter Todos</h3>
       <form onSubmit={handleSubmit} className="filterform-form">
-        <label htmlFor="filterform-form-title">Filter by date</label>
+        <label htmlFor="filterform-form-title">Date Added</label>
         <input
           id="filterform-form__title"
           className="filterform-form-title"
@@ -46,11 +55,18 @@ const FilterForm = ({ onFilter }) => {
           onChange={handleChange}
         />
         <OptionsList
-          options={Object.values(filtervalues)}
+          options={Object.values(importanceFilter)}
           value={formInput.importanceInput}
           onChange={handleChange}
-          labelText="Filter by Importance"
+          labelText="Todo Importance"
           name="importanceInput"
+        />
+        <OptionsList
+          options={Object.values(completionFilter)}
+          value={formInput.completionInput}
+          onChange={handleChange}
+          labelText="Completion Status"
+          name="completionInput"
         />
         <Button onClick={handleSubmit}>Filter Todos</Button>
         <Button onClick={resetFilter}>Reset</Button>

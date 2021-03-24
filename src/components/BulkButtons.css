@@ -1,14 +1,16 @@
 .bulkbuttons {
   box-sizing: border-box;
+  width: 80px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: 100%;
-  padding-right: 10px;
   padding-top: 10px;
 }
 
 .bulkbuttons-delete,
 .bulkbuttons-toggle {
+  color: #f7fbfc;
   height: 50px;
   width: 50px;
   border: 1px solid black;
@@ -20,11 +22,31 @@
 .bulkbuttons-delete:hover,
 .bulkbuttons-toggle:hover {
   background-color: #769fcd;
+  border-color: #f7fbfc;
 }
 
 .bulkbuttons-delete-icon,
 .bulkbuttons-toggle-icon {
   width: 25px;
   height: 25px;
+  margin-top: 10px;
+}
+
+.bulkbuttons-delete-text,
+.bulkbuttons-toggle-text {
+  display: none;
+  color: black;
+  padding: 2px;
+  background: #769fcd;
+  border: 1px solid #f7fbfc;
+  border-radius: 5%;
+}
+
+.bulkbuttons-delete:hover + .bulkbuttons-delete-text,
+.bulkbuttons-toggle:hover + .bulkbuttons-toggle-text {
+  display: block;
+}
+
+.bulkbuttons-toggle {
   margin-top: 10px;
 }

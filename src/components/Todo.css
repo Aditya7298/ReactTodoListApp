@@ -1,12 +1,13 @@
 .todo {
   background-color: #f7fbfc;
-  border: 0.5px solid black;
   width: 200px;
   min-height: 150px;
   text-align: center;
   margin-bottom: 10px;
   margin-right: 10px;
   position: relative;
+  border: 2.5px solid #769fcd;
+  border-radius: 5%;
 }
 
 .todo-completed {
@@ -15,16 +16,14 @@
 
 .todo-selectbutton {
   position: absolute;
-  bottom: 0px;
-  left: 0px;
+  bottom: 3px;
+  left: 3px;
   background: white;
-  border-top: 1px solid black;
-  border-right: 1px solid black;
+  border: 2px solid #769fcd;
   height: 10px;
   width: 10px;
-  /* border-radius: 50%; */
-
   cursor: pointer;
+  border-radius: 50%;
 }
 
 .todo-buttons-delete,

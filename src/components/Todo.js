@@ -24,7 +24,7 @@ const Todo = ({
         }`}
       ></span>
       <span className={`todo-title ${completed ? "todo-completed" : ""}`}>
-        {title}
+        {title.length > 20 ? `${title.slice(0, 14)}...` : `${title}`}
       </span>
       <span className="todo-date">{date}</span>
       <span className="todo-importance">{importance}</span>
