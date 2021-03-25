@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
-import { importanceFilter, completionFilter } from "../constants";
-import Todo from "./Todo";
-import EditForm from "./EditForm";
-import Navbar from "./Navbar";
-import AddForm from "./AddForm";
-import FilterForm from "./FilterForm";
-import Analytics from "./Analytics";
-import BulkButtons from "./BulkButtons";
-import Snackbar from "./Snackbar";
-import useHistory from "../hooks/useHistory";
-import useModel from "../hooks/useModel";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { importanceFilter, completionFilter } from "../../constants";
+import { Todo } from "../todo/Todo";
+import { EditForm } from "../editForm/EditForm";
+import { Navbar } from "../navbar/Navbar";
+import { AddForm } from "../addForm/AddForm";
+import { FilterForm } from "../filterForm/FilterForm";
+import { Analytics } from "../analytics/Analytics";
+import { BulkButtons } from "../bulkButtons/BulkButtons";
+import { Snackbar } from "../snackbar/Snackbar";
+import { useHistory } from "./hooks/useHistory";
+import { useModel } from "./hooks/useModel";
 import "./TodoList.css";
 
 const TodoList = () => {
@@ -30,7 +30,7 @@ const TodoList = () => {
 
   const [showSnackbar, setShowSnackbar] = useState(false);
 
-  const [
+  const {
     readAllTodos,
     readSingleTodo,
     changeTodoStoreState,
@@ -40,16 +40,47 @@ const TodoList = () => {
     toggleBulkTodos,
     deleteTodo,
     deleteBulkTodos,
-  ] = useModel();
+  } = useModel();
 
-  const [
+  const {
     initHistory,
     addNewEventToHistory,
     fetchUndoHistory,
     fetchRedoHistory,
     removeFromUndoHistory,
     removeFromRedoHistory,
-  ] = useHistory();
+  } = useHistory();
+
+  const filteredTodos = useMemo(
+    () =>
+      todoList.filter((todo) => {
+        const filteredDate =
+            filterInfo.date === ""
+              ? ""
+              : new Date(filterInfo.date).toDateString(),
+          filteredImportance = filterInfo.importance;
+
+        const filteredCompletion =
+          filterInfo.completion === completionFilter.ALL
+            ? completionFilter.ALL
+            : filterInfo.completion === completionFilter.COMPLETED
+            ? true
+            : false;
+
+        if (
+          (filteredDate !== "" && todo.date !== filteredDate) ||
+          (filteredImportance !== importanceFilter.ALL &&
+            todo.importance !== filteredImportance) ||
+          (filteredCompletion !== completionFilter.ALL &&
+            todo.completed !== filteredCompletion)
+        ) {
+          return false;
+        }
+
+        return true;
+      }),
+    [todoList, filterInfo]
+  );
 
   useEffect(() => {
     const currTodoList = readAllTodos();
@@ -157,10 +188,12 @@ const TodoList = () => {
     const todoIds = Array.from(selectedTodoIds);
     deleteBulkTodos(todoIds).then((modelResponse) => {
       if (modelResponse) {
-        const currTodoList = readAllTodos();
-        addNewEventToHistory(currTodoList);
-        setTodoList(currTodoList);
-        setSelectedTodoIds(new Set());
+        if (todoIds.length > 0) {
+          const currTodoList = readAllTodos();
+          addNewEventToHistory(currTodoList);
+          setTodoList(currTodoList);
+          setSelectedTodoIds(new Set());
+        }
       } else {
         handleSnackbar();
       }
@@ -186,10 +219,12 @@ const TodoList = () => {
     const todoIds = Array.from(selectedTodoIds);
     toggleBulkTodos(todoIds).then((modelResponse) => {
       if (modelResponse) {
-        const currTodoList = readAllTodos();
-        setTodoList(currTodoList);
-        addNewEventToHistory(currTodoList);
-        setSelectedTodoIds(new Set());
+        if (todoIds.length > 0) {
+          const currTodoList = readAllTodos();
+          setTodoList(currTodoList);
+          addNewEventToHistory(currTodoList);
+          setSelectedTodoIds(new Set());
+        }
       } else {
         handleSnackbar();
       }
@@ -247,45 +282,6 @@ const TodoList = () => {
     );
   };
 
-  const getFilteredTodos = () => {
-    const filteredTodos = todoList.filter((todo) => {
-      const filteredDate =
-          filterInfo.date === ""
-            ? ""
-            : new Date(filterInfo.date).toDateString(),
-        filteredImportance = filterInfo.importance;
-
-      const filteredCompletion =
-        filterInfo.completion === completionFilter.ALL
-          ? completionFilter.ALL
-          : filterInfo.completion === completionFilter.COMPLETED
-          ? true
-          : false;
-
-      if (filteredDate !== "" && todo.date !== filteredDate) {
-        return false;
-      }
-
-      if (
-        filteredImportance !== importanceFilter.ALL &&
-        todo.importance !== filteredImportance
-      ) {
-        return false;
-      }
-
-      if (
-        filteredCompletion !== completionFilter.ALL &&
-        todo.completed !== filteredCompletion
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-
-    return filteredTodos;
-  };
-
   return (
     <div className="todolist">
       <div className="todolist-header">
@@ -295,10 +291,10 @@ const TodoList = () => {
         <div className="todolist-body-sidebar">
           <AddForm onAdd={handleAdd} />
           <FilterForm onFilter={handlefilter} />
-          <Analytics todoList={getFilteredTodos()} />
+          <Analytics todoList={filteredTodos} />
         </div>
         <div className="todolist-body-container">
-          {getFilteredTodos().map((todo) => (
+          {filteredTodos.map((todo) => (
             <Todo
               key={todo.id}
               todoInfo={todo}

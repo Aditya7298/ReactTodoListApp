@@ -1,6 +1,7 @@
+import React from "react";
 import "./Button.css";
 
-const Button = ({ children, onClick }) => {
+export const Button = React.memo(({ children, onClick }) => {
   const handleClick = (event) => {
     onClick(event);
   };
@@ -10,6 +11,4 @@ const Button = ({ children, onClick }) => {
       {children}
     </button>
   );
-};
-
-export default Button;
+});

@@ -1,6 +1,7 @@
+import React from "react";
 import "./Navbar.css";
 
-const Navbar = () => {
+export const Navbar = React.memo(() => {
   const currDate = new Date();
   const dateString = currDate.toDateString().slice(4);
   return (
@@ -9,6 +10,4 @@ const Navbar = () => {
       <span className="navbar-date">{dateString}</span>
     </div>
   );
-};
-
-export default Navbar;
+});

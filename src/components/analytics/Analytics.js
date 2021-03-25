@@ -1,6 +1,7 @@
+import React from "react";
 import "./Analytics.css";
 
-const Analytics = ({ todoList }) => {
+export const Analytics = React.memo(({ todoList }) => {
   let completedCount = 0;
   todoList.forEach((todo) => {
     if (todo.completed) {
@@ -48,6 +49,4 @@ const Analytics = ({ todoList }) => {
       </svg>
     </div>
   );
-};
-
-export default Analytics;
+});

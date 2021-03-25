@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
-import { importance } from "../constants";
-import Button from "./Button";
-import OptionsList from "./OptionsList";
+import React, { useState, useCallback } from "react";
+import { importance } from "../../constants";
+import { Button } from "../button/Button";
+import { OptionsList } from "../optionsList/OptionsList";
 import "./AddForm.css";
 
-const AddForm = ({ onAdd }) => {
+export const AddForm = React.memo(({ onAdd }) => {
   const [newTodoInfo, setNewTodoInfo] = useState({
     titleInput: "",
     importanceInput: importance.HIGH,
@@ -53,6 +53,4 @@ const AddForm = ({ onAdd }) => {
       </form>
     </div>
   );
-};
-
-export default AddForm;
+});

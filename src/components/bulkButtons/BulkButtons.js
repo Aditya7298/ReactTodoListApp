@@ -1,8 +1,9 @@
+import React from "react";
 import "./BulkButtons.css";
-import BulkDeleteIcon from "./Icons/delete.png";
-import BulkToggleIcon from "./Icons/toggle.png";
+import BulkDeleteIcon from "./icons/delete.png";
+import BulkToggleIcon from "./icons/toggle.png";
 
-const BulkButtons = ({ onBulkDelete, onBulkToggle }) => {
+export const BulkButtons = React.memo(({ onBulkDelete, onBulkToggle }) => {
   return (
     <div className="bulkbuttons">
       <span
@@ -45,6 +46,4 @@ const BulkButtons = ({ onBulkDelete, onBulkToggle }) => {
       </span>
     </div>
   );
-};
-
-export default BulkButtons;
+});

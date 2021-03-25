@@ -1,6 +1,6 @@
 import { useRef, useCallback } from "react";
 
-const useHistory = () => {
+export const useHistory = () => {
   const history = useRef({ past: [], present: null, future: [] });
 
   const initHistory = useCallback((todoList) => {
@@ -60,14 +60,12 @@ const useHistory = () => {
     };
   }, []);
 
-  return [
+  return {
     initHistory,
     addNewEventToHistory,
     fetchUndoHistory,
     fetchRedoHistory,
     removeFromUndoHistory,
     removeFromRedoHistory,
-  ];
+  };
 };
-
-export default useHistory;

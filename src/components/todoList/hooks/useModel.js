@@ -1,8 +1,8 @@
 import { useRef, useCallback } from "react";
-import { resolveDatabaseCall } from "../database.js";
+import { resolveDatabaseCall } from "../../../database.js";
 import { v4 as uuid } from "uuid";
 
-const useModel = () => {
+export const useModel = () => {
   const TodoStore = useRef([
     {
       id: "1",
@@ -130,7 +130,7 @@ const useModel = () => {
     }
   }, []);
 
-  return [
+  return {
     readAllTodos,
     readSingleTodo,
     changeTodoStoreState,
@@ -140,7 +140,5 @@ const useModel = () => {
     toggleBulkTodos,
     deleteTodo,
     deleteBulkTodos,
-  ];
+  };
 };
-
-export default useModel;

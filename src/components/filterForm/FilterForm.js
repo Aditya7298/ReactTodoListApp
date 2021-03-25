@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from "react";
-import { importanceFilter, completionFilter } from "../constants";
-import Button from "./Button";
-import OptionsList from "./OptionsList";
+import { importanceFilter, completionFilter } from "../../constants";
+import { Button } from "../button/Button";
+import { OptionsList } from "../optionsList/OptionsList";
 import "./FilterForm.css";
 
-const FilterForm = ({ onFilter }) => {
+export const FilterForm = React.memo(({ onFilter }) => {
   const [formInput, setFormInput] = useState({
     importanceInput: importanceFilter.ALL,
     dateInput: "",
@@ -73,6 +73,4 @@ const FilterForm = ({ onFilter }) => {
       </form>
     </div>
   );
-};
-
-export default FilterForm;
+});
