@@ -30,8 +30,6 @@ export const TodoList = () => {
 
   const [showSnackbar, setShowSnackbar] = useState(false);
 
-  const model = useModel();
-
   const {
     readAllTodos,
     readSingleTodo,
@@ -83,10 +81,6 @@ export const TodoList = () => {
       }),
     [todoList, filterInfo]
   );
-
-  useEffect(() => {
-    console.log("Ran");
-  }, [model]);
 
   useEffect(() => {
     const currTodoList = readAllTodos();
