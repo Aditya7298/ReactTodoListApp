@@ -130,6 +130,34 @@ export const useModel = () => {
     }
   }, []);
 
+  /*Since multiple functions are being returned, 
+    should model be returned as an object like - 
+    const model = useMemo(
+    () => ({
+      readAllTodos,
+      readSingleTodo,
+      changeTodoStoreState,
+      createTodo,
+      editTodo,
+      toggleTodo,
+      toggleBulkTodos,
+      deleteTodo,
+      deleteBulkTodos,
+    }),
+    [
+      readAllTodos,
+      readSingleTodo,
+      changeTodoStoreState,
+      createTodo,
+      editTodo,
+      toggleTodo,
+      toggleBulkTodos,
+      deleteTodo,
+      deleteBulkTodos,
+    ]
+  );
+  */
+
   return {
     readAllTodos,
     readSingleTodo,
