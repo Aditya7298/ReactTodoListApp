@@ -12,7 +12,7 @@ import { useHistory } from "./hooks/useHistory";
 import { useModel } from "./hooks/useModel";
 import "./TodoList.css";
 
-const TodoList = () => {
+export const TodoList = () => {
   const [todoList, setTodoList] = useState([]);
 
   const [editFormInfo, setEditFormInfo] = useState({
@@ -319,5 +319,3 @@ const TodoList = () => {
     </div>
   );
 };
-
-export default TodoList;
